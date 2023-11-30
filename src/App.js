@@ -296,7 +296,8 @@ export default class App extends Component {
         "health",
         "science",
         "sports",
-        "technology"]
+        "technology"],
+      updatedCategory : ""
     }
   }
 
@@ -304,36 +305,29 @@ export default class App extends Component {
     this.setState({loading : true})
     const response = await fetch(`https://newsapi.org/v2/top-headlines?country=in&page=${this.state.page}&pageSize=${this.state.pageSize}&apiKey=d7bc5a69d44b4ecaafde41f8306406c3`)
     const data = await response.json();
-    // console.log(data)
-    this.setState({articles : data.articles, loading: false})
+    this.setState({articles : data.articles, totalResults : data.totalResults, loading: false})
+  }
+
+  updateNews = async() =>{
+    this.setState({loading : true})
+    const response = await fetch(`https://newsapi.org/v2/top-headlines?country=in&category=${this.state.updatedCategory}&page=${this.state.page}&pageSize=${this.state.pageSize}&apiKey=d7bc5a69d44b4ecaafde41f8306406c3`)
+    const data = await response.json();
+    this.setState({articles : data.articles, totalResults : data.totalResults, title : this.state.updatedCategory, loading: false})
   }
 
   handleNextClick = async()=>{
-    // console.log("Clicked Next")
-    this.setState({loading : true})
-    const response = await fetch(`https://newsapi.org/v2/top-headlines?country=in&page=${this.state.page+1}&pageSize=${this.state.pageSize}&apiKey=d7bc5a69d44b4ecaafde41f8306406c3`)
-    const data = await response.json();
-    this.setState({articles : data.articles, page : this.state.page + 1, loading: false})
+    this.setState({page : this.state.page + 1}, this.updateNews)
   }
 
   handlePrevClick = async()=>{
-    // console.log("Clicked Prev")
-    this.setState({loading : true})
-    const response = await fetch(`https://newsapi.org/v2/top-headlines?country=in&page=${this.state.page-1}&pageSize=${this.state.pageSize}&apiKey=d7bc5a69d44b4ecaafde41f8306406c3`)
-    const data = await response.json();
-    this.setState({articles : data.articles, page : this.state.page - 1, loading: false})
+    this.setState({page : this.state.page - 1,}, this.updateNews)
   }
 
   handleCategoryClick = async(category)=>{
-    this.setState({loading : true})
-    const response = await fetch(`https://newsapi.org/v2/top-headlines?country=in&category=${category}&page=${this.state.page-1}&pageSize=${this.state.pageSize}&apiKey=d7bc5a69d44b4ecaafde41f8306406c3`)
-    const data = await response.json();
-    // this.setState({this.category})
-    this.setState({articles : data.articles, loading : false, title: category})
+    this.setState({ updatedCategory: category }, this.updateNews);
   }
 
   render() {
-    // console.log(this.state.articles)
     return (
       <>
         <Router>
@@ -343,7 +337,7 @@ export default class App extends Component {
           {this.state.loading?<Spinner /> : ""}
           <Routes> 
             <Route path="/OurNews" element={<NewsComponent articles={this.state.articles} page={this.state.page} loading={this.state.loading} handleNextClick={this.handleNextClick} handlePrevClick={this.handlePrevClick}/>} />
-            <Route path="*" element={<NewsComponent articles={this.state.articles} page={this.state.page} title={this.state.title} loading={this.state.loading} handleNextClick={this.handleNextClick} handlePrevClick={this.handlePrevClick}/>}/>
+            <Route path="*" element={<NewsComponent articles={this.state.articles} page={this.state.page} title={this.state.title} loading={this.state.loading} totalResults={this.state.totalResults} handleNextClick={this.handleNextClick} handlePrevClick={this.handlePrevClick}/>}/>
           </Routes>
         </div>
         </Router>
