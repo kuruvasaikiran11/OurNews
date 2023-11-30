@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Navbar from './components/Navbar'
 import NewsComponent from "./components/NewsComponent";
+import Spinner from "./components/Spinner";
 
 
 export default class App extends Component {
@@ -285,7 +286,7 @@ export default class App extends Component {
               }
       ],
       totalResults : 0,
-      loading : false,
+      loading : true,
       page : 1,
       pageSize : 12,
       category : ["home", "business",
@@ -299,33 +300,35 @@ export default class App extends Component {
   }
 
   async componentDidMount(){
+    this.setState({loading : true})
     const response = await fetch(`https://newsapi.org/v2/top-headlines?country=in&page=${this.state.page}&pageSize=${this.state.pageSize}&apiKey=d7bc5a69d44b4ecaafde41f8306406c3`)
     const data = await response.json();
     // console.log(data)
-    this.setState({articles : data.articles})
+    this.setState({articles : data.articles, loading: false})
   }
 
   handleNextClick = async()=>{
     // console.log("Clicked Next")
+    this.setState({loading : true})
     const response = await fetch(`https://newsapi.org/v2/top-headlines?country=in&page=${this.state.page+1}&pageSize=${this.state.pageSize}&apiKey=d7bc5a69d44b4ecaafde41f8306406c3`)
     const data = await response.json();
-    this.setState({page : this.state.page + 1})
-    this.setState({articles : data.articles})
+    this.setState({articles : data.articles, page : this.state.page + 1, loading: false})
   }
 
   handlePrevClick = async()=>{
     // console.log("Clicked Prev")
+    this.setState({loading : true})
     const response = await fetch(`https://newsapi.org/v2/top-headlines?country=in&page=${this.state.page-1}&pageSize=${this.state.pageSize}&apiKey=d7bc5a69d44b4ecaafde41f8306406c3`)
     const data = await response.json();
-    this.setState({page : this.state.page - 1})
-    this.setState({articles : data.articles})
+    this.setState({articles : data.articles, page : this.state.page - 1, loading: false})
   }
 
   handleCategoryClick = async(category)=>{
+    this.setState({loading : true})
     const response = await fetch(`https://newsapi.org/v2/top-headlines?country=in&category=${category}&page=${this.state.page-1}&pageSize=${this.state.pageSize}&apiKey=d7bc5a69d44b4ecaafde41f8306406c3`)
     const data = await response.json();
     // this.setState({this.category})
-    this.setState({articles : data.articles})
+    this.setState({articles : data.articles, loading : false})
   }
 
   render() {
@@ -333,9 +336,14 @@ export default class App extends Component {
     return (
       <>
         <Router>
-        <Navbar handleCategoryClick={this.handleCategoryClick} category={this.state.category}/>
+          <Navbar handleCategoryClick={this.handleCategoryClick} category={this.state.category}/>
+          
         <div className="container">
-          <NewsComponent articles={this.state.articles} page={this.state.page} handleNextClick={this.handleNextClick} handlePrevClick={this.handlePrevClick}/>
+          {this.state.loading?<Spinner /> : ""}
+          <Routes> 
+            <Route path="/OurNews" element={<NewsComponent articles={this.state.articles} page={this.state.page} loading={this.state.loading} handleNextClick={this.handleNextClick} handlePrevClick={this.handlePrevClick}/>} />
+            <Route path="*" element={<NewsComponent articles={this.state.articles} page={this.state.page} loading={this.state.loading} handleNextClick={this.handleNextClick} handlePrevClick={this.handlePrevClick}/>}/>
+          </Routes>
         </div>
         </Router>
       </>
