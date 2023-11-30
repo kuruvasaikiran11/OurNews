@@ -2,15 +2,19 @@ import React, { Component } from 'react'
 import NewsItem from './NewsItem'
 
 export default class NewsComponent extends Component {
+
+  capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
   render() {
-    const {loading} = this.props;
+    const {loading, title} = this.props;
     // console.log(this.props.articles)
     return (
       <div>
         
         {loading? "" : 
         <>
-          <h1 className='m-4 text-center' style={{color:'whitesmoke'}}>Our News - Top Headlines</h1>
+          <h1 className='m-4 text-center' style={{color:'whitesmoke'}}>Our News - Top {this.capitalize(title)} Headlines</h1>
           <NewsItem articles={this.props.articles}/>
         </>}
         <div className='d-flex justify-content-between m-4'>

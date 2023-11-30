@@ -6,7 +6,7 @@ export default class Navbar extends Component {
     return (
         <nav className="navbar navbar-expand-lg sticky-top bg-secondary" data-bs-theme="dark">
         <div className="container-fluid">
-          <Link to="/OurNews" className="navbar-brand" href="/"><h2><i>OurNews</i></h2></Link>
+          <Link to="/OurNews" className="navbar-brand" href="/" onClick={()=>this.props.handleCategoryClick("")}  ><h2><i>OurNews</i></h2></Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -14,7 +14,7 @@ export default class Navbar extends Component {
             {this.props.category.map((item)=>{
               return <ul className="navbar-nav" key={item}>
                   <li className="nav-item">
-                  <Link to={item} className="nav-link active" aria-current="page" href="/" onClick={()=>this.props.handleCategoryClick(item)}>{item}</Link>
+                  <Link to={item==="home"?"/OurNews" : item} className="nav-link active" aria-current="page" href="/" onClick={item==="home" ? ()=>this.props.handleCategoryClick("") : ()=>this.props.handleCategoryClick(item) }>{item}</Link>
                 </li>
               </ul>
               })}

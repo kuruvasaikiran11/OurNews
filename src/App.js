@@ -289,6 +289,7 @@ export default class App extends Component {
       loading : true,
       page : 1,
       pageSize : 12,
+      title : "",
       category : ["home", "business",
         "entertainment",
         "general",
@@ -328,7 +329,7 @@ export default class App extends Component {
     const response = await fetch(`https://newsapi.org/v2/top-headlines?country=in&category=${category}&page=${this.state.page-1}&pageSize=${this.state.pageSize}&apiKey=d7bc5a69d44b4ecaafde41f8306406c3`)
     const data = await response.json();
     // this.setState({this.category})
-    this.setState({articles : data.articles, loading : false})
+    this.setState({articles : data.articles, loading : false, title: category})
   }
 
   render() {
@@ -342,7 +343,7 @@ export default class App extends Component {
           {this.state.loading?<Spinner /> : ""}
           <Routes> 
             <Route path="/OurNews" element={<NewsComponent articles={this.state.articles} page={this.state.page} loading={this.state.loading} handleNextClick={this.handleNextClick} handlePrevClick={this.handlePrevClick}/>} />
-            <Route path="*" element={<NewsComponent articles={this.state.articles} page={this.state.page} loading={this.state.loading} handleNextClick={this.handleNextClick} handlePrevClick={this.handlePrevClick}/>}/>
+            <Route path="*" element={<NewsComponent articles={this.state.articles} page={this.state.page} title={this.state.title} loading={this.state.loading} handleNextClick={this.handleNextClick} handlePrevClick={this.handlePrevClick}/>}/>
           </Routes>
         </div>
         </Router>
