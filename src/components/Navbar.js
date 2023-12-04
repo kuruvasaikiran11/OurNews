@@ -14,7 +14,7 @@ export default class Navbar extends Component {
             {this.props.category.map((item)=>{
               return <ul className="navbar-nav" key={item}>
                   <li className="nav-item">
-                  <Link to={item==="home"?"/OurNews" : item} className="nav-link active" aria-current="page" href="/" onClick={item==="home" ? ()=>this.props.handleCategoryClick("") : ()=>this.props.handleCategoryClick(item) }>{item}</Link>
+                  <Link to={item==="home"?"/OurNews" : item} className="nav-link active" aria-current="page" href="/" onClick={() => this.props.handleCategoryClick(item === "home" ? "" : item)}>{item}</Link>
                 </li>
               </ul>
               })}
